@@ -38,8 +38,8 @@ end
 
 
 defmodule GenX.GenFsm.Test do    
-  refer GenX.GenFsm.Sample, as: S
-  refer :gen_fsm, as: FSM
+  alias GenX.GenFsm.Sample, as: S
+  alias :gen_fsm, as: FSM
   use ExUnit.Case
 
   test "regular event with no arguments" do

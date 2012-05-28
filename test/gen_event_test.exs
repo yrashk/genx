@@ -31,8 +31,8 @@ end
 
 
 defmodule GenX.GenEvent.Test do    
-  refer GenX.GenEvent.Sample, as: S
-  refer :gen_event, as: GE
+  alias GenX.GenEvent.Sample, as: S
+  alias :gen_event, as: GE
   use ExUnit.Case
 
   test "regular event call with no arguments" do

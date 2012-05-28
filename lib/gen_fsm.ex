@@ -1,5 +1,5 @@
 defmodule GenFsm.Behavior do
- defmacro __using__(_, _) do
+ defmacro __using__(_) do
     quote do
       @behavior :gen_fsm
 

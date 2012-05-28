@@ -1,7 +1,7 @@
 defmodule GenX.GenServer.Sample do
  import GenX.GenServer              
  use GenServer.Behavior             
- refer :gen_server, as: GS
+ alias :gen_server, as: GS
 
  defcall call, do: {:reply, :call, nil}
  defcall call(a), do: {:reply, {:call, a}, nil}
@@ -58,8 +58,8 @@ defmodule GenX.GenServer.Sample do
 end
 
 defmodule GenX.GenServer.Test do    
-  refer GenX.GenServer.Sample, as: S
-  refer :gen_server, as: GS
+  alias GenX.GenServer.Sample, as: S
+  alias :gen_server, as: GS
   use ExUnit.Case
 
   test "regular call with no arguments" do
