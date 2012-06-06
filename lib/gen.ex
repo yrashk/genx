@@ -21,7 +21,7 @@ defmodule GenX.Gen do
       _  -> {:{}, 0, [function|arguments]}
     end
     arguments_stub = 
-        lc argn in :lists.seq(1, length(arguments)) do
+        lc argn inlist :lists.seq(1, length(arguments)) do
           {list_to_atom('arg_' ++ integer_to_list(argn)), 0, :quoted}
         end
     full_arguments =
@@ -40,7 +40,7 @@ defmodule GenX.Gen do
               :server -> {:server, 0, :quoted}
               val -> val
     end
-    extra_handle_arguments = lc e in (extras[:handle] || []), do: options[e] || {:_, 0, :quoted}
+    extra_handle_arguments = lc e inlist (extras[:handle] || []), do: options[e] || {:_, 0, :quoted}
     before_request_send_arguments = extras[:before_request] || []
     extra_send_arguments = extras[:send] || []
     args = List.concat [server|before_request_send_arguments], 
