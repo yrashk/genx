@@ -1,10 +1,3 @@
-defmodule Mix.Tasks.My do
-   use Mix.Task
-   @shortdoc "Test task"
-   def run(_) do
-       IO.inspect Mix.Tasks.Compile.__requires__
-   end
-end
 defmodule Mix.Project do
 
    def project do
