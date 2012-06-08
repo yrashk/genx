@@ -1,4 +1,4 @@
-{application,'__MAIN__.GenX',
+{application,genx,
              [{applications,[kernel,stdlib,elixir]},
               {modules, []},
               {vsn,"0.1"}]}.
