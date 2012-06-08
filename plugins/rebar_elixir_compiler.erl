@@ -51,6 +51,7 @@ compile(Config, _AppFile) ->
     dotex_compile(Config, "ebin").
 
 -spec post_compile(Config::rebar_config:config(), AppFile::file:filename()) -> 'ok'.
+post_compile(_, undefined) -> ok;
 post_compile(Config, AppFile) ->
     case rebar_app_utils:is_app_src(AppFile) of
         true ->
@@ -85,8 +86,10 @@ dotex_compile(Config, OutDir) ->
     dotex_compile(Config, OutDir, []).
 
 dotex_compile(Config, OutDir, MoreSources) ->
-    case application:load(elixir) of
-        ok ->
+    App = application:load(elixir),
+    Loaded = (App == ok orelse App == {error, {already_loaded, elixir}}),
+    case Loaded of
+        true ->
             application:start(elixir),
             FirstExs = rebar_config:get_list(Config, ex_first_files, []),
             ExOpts = ex_opts(Config),
@@ -105,12 +108,12 @@ dotex_compile(Config, OutDir, MoreSources) ->
             true = code:add_path(filename:absname(OutDir)),
 
             '__MAIN__.Code':compiler_options(orddict:from_list(ExOpts)),
-            '__MAIN__.Elixir.ParallelCompiler':files_to_path(NewFirstExs ++ RestExs, OutDir, fun(F) -> 
+            '__MAIN__.Elixir.ParallelCompiler':files_to_path([ list_to_binary(F) || F <- NewFirstExs ++ RestExs], list_to_binary(OutDir), fun(F) -> 
                   io:format("Compiled ~s~n",[F])
                end),
             true = code:set_path(CurrPath),
             ok;
-        _ ->
+        false ->
             rebar_log:log(info, "No Elixir compiler found~n", [])
     end.
 
