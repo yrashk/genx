@@ -18,7 +18,7 @@ defmodule GenX.Supervisor.Test do
 
    test "start" do
        {:ok, pid} = S.start_link
-       assert [{OFO.Registered, pid_ofor, :supervisor, _}] = :supervisor.which_children(pid)
+       [{OFO.Registered, pid_ofor, :supervisor, _}] = :supervisor.which_children(pid)
        assert :supervisor.which_children(pid_ofor) == []
        assert Process.whereis(OFO.Registered) == pid_ofor
    end
