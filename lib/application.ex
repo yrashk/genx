@@ -38,3 +38,15 @@ defmodule Application do
   end
   
 end
+
+defmodule Application.Behavior do
+ defmacro __using__(_) do
+    quote do
+      @behavior :application
+
+      def stop(_state), do: :ok
+
+      defoverridable [stop: 1]
+    end
+ end
+end
