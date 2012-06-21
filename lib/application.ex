@@ -36,6 +36,14 @@ defmodule Application do
       {_, other} -> other
     end
   end
+
+  def environment(application) do
+      Keyword.from_enum(:application.get_all_env(application))
+  end
+
+  def environment do
+      Keyword.from_enum(:application.get_all_env)
+  end
   
 end
 
