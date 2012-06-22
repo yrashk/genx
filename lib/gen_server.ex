@@ -2,7 +2,7 @@ defmodule GenX.GenServer do
   import GenX.Gen
 
   defmacro defcall(call, options, body) do
-     unless is_list(options[:export]), do: options = Keyword.put options, :export, [server: options[:export]]
+     unless is_list(options[:export]) or options[:export] == nil, do: options = Keyword.put options, :export, [server: options[:export]]
      send = case (options[:export]||[])[:timeout] do
                  nil -> []
                  v -> [v]
