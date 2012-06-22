@@ -100,17 +100,23 @@ dotex_compile(Config, OutDir, MoreSources) ->
             RestExs  = [Source || Source <- gather_src(SrcDirs, []) ++ MoreSources,
                                   not lists:member(Source, FirstExs)],
             
-            NewFirstExs = FirstExs,
-            
             %% Make sure that ebin/ exists and is on the path
-            ok = filelib:ensure_dir(filename:join(OutDir, "dummy.beam")),
+            OutDirExists = filelib:is_dir(OutDir),
+
             CurrPath = code:get_path(),
             true = code:add_path(filename:absname(OutDir)),
 
-            '__MAIN__.Code':compiler_options(orddict:from_list(ExOpts)),
-            '__MAIN__.Elixir.ParallelCompiler':files_to_path([ list_to_binary(F) || F <- NewFirstExs ++ RestExs], list_to_binary(OutDir), fun(F) -> 
-                  io:format("Compiled ~s~n",[F])
-               end),
+            EbinDate =
+            case OutDirExists of
+                true -> 
+                    {ok, Files} = file:list_dir(OutDir),
+                    lists:max([ filelib:last_modified(F) || F <- [OutDir|Files] ]);
+                false -> 0
+            end,
+
+            compile(FirstExs, ExOpts, OutDir, EbinDate),
+            compile(RestExs, ExOpts, OutDir, EbinDate),
+            
             true = code:set_path(CurrPath),
             ok;
         false ->
@@ -121,6 +127,35 @@ dotex_compile(Config, OutDir, MoreSources) ->
 %% ===================================================================
 %% Internal functions
 %% ===================================================================
+compile(Exs, ExOpts, OutDir, EbinDate) ->
+    case is_newer(Exs, EbinDate) of
+        true ->
+            '__MAIN__-Code':compiler_options(orddict:from_list(ExOpts)),
+            Files = [ list_to_binary(F) || F <- Exs],
+            try 
+                '__MAIN__-Elixir-ParallelCompiler':
+                    files_to_path(Files,
+                                  list_to_binary(OutDir), 
+                                  fun(F) -> 
+                                          io:format("Compiled ~s~n",[F])
+                                          end),
+                file:change_time(OutDir, erlang:localtime()),
+                ok
+            catch _:{'__MAIN__-CompileError',
+                     '__exception__',
+                     Reason,
+                     File, Line} ->
+                    file:change_time(OutDir, EbinDate),
+                    io:format("Compile error in ~s:~w~n ~ts~n~n",[File, Line, Reason]),
+                    throw({error, failed})
+            end;
+        false -> ok
+    end.
+
+is_newer(Files, Time) ->
+    lists:any(fun(FileTime) ->
+                      FileTime > Time
+              end, [ filelib:last_modified(File) || File <- Files ]).
 
 ex_opts(Config) ->
     rebar_config:get(Config, ex_opts, [{ignore_module_conflict, true}]).
