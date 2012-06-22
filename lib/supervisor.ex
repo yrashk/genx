@@ -141,16 +141,16 @@ defmodule GenX.Supervisor do
   defdelegate [supervise: 1], to: Supervision
   defdelegate [supervisor: 1, cast: 1], to: Supervisor
 
-  def start_link(sup) do
+  def start_link(sup, {module, args} // {__MODULE__, nil}) do
     case sup.registered do
       false ->
-        :supervisor.start_link(__MODULE__, supervisor(sup))
+        :supervisor.start_link(module, {supervisor(sup), args})
       name ->
-        :supervisor.start_link({:local, name}, __MODULE__, supervisor(sup))
+        :supervisor.start_link({:local, name}, module, {supervisor(sup), args})
     end
   end
 
-  def init(sup) do
+  def init({sup, _args}) do
     {:ok, sup}
   end
 
