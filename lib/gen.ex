@@ -49,7 +49,7 @@ defmodule GenX.Gen do
       def unquote(callback).(unquote(request),
                              unquote_splicing(extra_handle_arguments),
                              unquote(state)), do: unquote(options[:do])
-      unless Module.function_defined?(__MODULE__, 
+      unless Module.defines?(__MODULE__, 
                                       {unquote(export[:name]), 
                                         unquote(arity)}) and
              unquote(export[:name]) !== false do
