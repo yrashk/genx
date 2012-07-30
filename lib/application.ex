@@ -1,12 +1,12 @@
 defmodule Application do
   @moduledoc "Application startup and shutdown functionality"
 
-  defdelegate [load: 1, load: 2,
-               get_application: 0, get_application: 1,
-               loaded_applications: 0, permit: 2, 
-               stop: 1, takeover: 2, unload: 1], to: :application
+  defdelegate [load(app_descr), load(app_descr, distributed),
+               get_application, get_application(pid_or_module),
+               loaded_applications, permit(application, permission), 
+               stop(application), takeover(application, type), unload(application)], to: :application
 
-  defdelegate [running_applications: 0, running_applications: 1], to: :application, as: :which_applications
+  defdelegate [running_applications, running_applications(timeout)], to: :application, as: :which_applications
   
   @doc """
   `Application.start/1` and `Application.start/2` are used to start applications. They are similar to `:application.start/1` and

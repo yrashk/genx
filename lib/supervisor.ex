@@ -138,8 +138,8 @@ defmodule GenX.Supervisor do
   end
 
 
-  defdelegate [supervise: 1], to: Supervision
-  defdelegate [supervisor: 1, cast: 1], to: Supervisor
+  defdelegate [supervise(s)], to: Supervision
+  defdelegate [supervisor(s), cast(s)], to: Supervisor
 
   def start_link(sup, {module, args} // {__MODULE__, nil}) do
     case sup.registered do
