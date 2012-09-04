@@ -1,7 +1,7 @@
-defmodule GenFsm.Behavior do
+defmodule GenFsm.Behaviour do
  defmacro __using__(_) do
     quote do
-      @behavior :gen_fsm
+      @behaviour :gen_fsm
 
       def handle_event(_event, state_name, state) do
         { :next_state, state_name, state }

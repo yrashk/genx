@@ -1,13 +1,13 @@
-defmodule Supervisor.Behavior do
+defmodule Supervisor.Behaviour do
   defmacro __using__(_) do
     quote do
-      @behavior :supervisor
+      @behaviour :supervisor
     end
   end
 end
 
 defmodule GenX.Supervisor do
-  use Supervisor.Behavior
+  use Supervisor.Behaviour
 
   defrecord Child, id: :undefined, start_func: :undefined, restart: :permanent,
                    shutdown: 5000, type: :undefined, modules: []

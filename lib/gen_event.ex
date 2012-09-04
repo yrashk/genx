@@ -1,7 +1,7 @@
-defmodule GenEvent.Behavior do
+defmodule GenEvent.Behaviour do
  defmacro __using__(_) do
     quote do
-      @behavior :gen_event
+      @behaviour :gen_event
 
       def handle_event(_event, state) do
         { :ok, state }

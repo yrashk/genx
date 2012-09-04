@@ -47,10 +47,10 @@ defmodule Application do
   
 end
 
-defmodule Application.Behavior do
+defmodule Application.Behaviour do
  defmacro __using__(_) do
     quote do
-      @behavior :application
+      @behaviour :application
 
       def stop(_state), do: :ok
 

@@ -1,5 +1,5 @@
 defmodule GenX.GenEvent.Sample do                                                           
- use GenEvent.Behavior                                                    
+ use GenEvent.Behaviour                                                    
  import GenX.GenEvent                                                     
 
  def init(_), do: {:ok, nil}                                           

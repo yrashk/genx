@@ -1,6 +1,6 @@
 defmodule GenX.GenServer.Sample do
  import GenX.GenServer              
- use GenServer.Behavior             
+ use GenServer.Behaviour             
  alias :gen_server, as: GS
 
  defcall call, do: {:reply, :call, nil}
@@ -103,14 +103,12 @@ defmodule GenX.GenServer.Test do
 
   test "custom timeout call" do
       {:ok, pid} = GS.start_link(S,[],[]) 
-      assert_exit {:timeout, {:gen_server, :call, [pid, :timeout, 1]}},
-                  fn() -> S.timeout(pid) end
+      assert catch_exit(S.timeout(pid)) == {:timeout, {:gen_server, :call, [pid, :timeout, 1]}}
   end
 
   test "custom named timeout call" do
       {:ok, _pid} = GS.start_link({:local, SampleServer}, S,[],[]) 
-      assert_exit {:timeout, {:gen_server, :call, [SampleServer, :named_timeout, 1]}},
-                  fn() -> S.named_timeout end
+      assert catch_exit(S.named_timeout) == {:timeout, {:gen_server, :call, [SampleServer, :named_timeout, 1]}}
       Process.unregister SampleServer
   end
 
