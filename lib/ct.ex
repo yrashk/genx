@@ -110,7 +110,7 @@ defmodule CommonTest.Suite do
     cfg = options[:config] || {:_, 0, :quoted}
     info = Keyword.delete(Keyword.delete(options, :config), :do)
     quote do
-      if Module.read_attribute(unquote(caller.module), :group) == nil do
+      if Module.get_attribute(unquote(caller.module), :group) == nil do
         @all unquote(name)
       else
         @group_test unquote(name)
@@ -133,7 +133,7 @@ defmodule CommonTest.Suite do
       @group {unquote(name), unquote(type)}
       unquote(block)
       @group nil
-      @groups {unquote(name), unquote(type), Module.read_attribute(unquote(__CALLER__.module), :group_test)}
+      @groups {unquote(name), unquote(type), Module.get_attribute(unquote(__CALLER__.module), :group_test)}
      @all {:group, unquote(name)}
     end
   end
