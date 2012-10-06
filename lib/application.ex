@@ -37,10 +37,16 @@ defmodule Application do
     end
   end
 
+  @doc """
+  Returns application's environment as a keyword
+  """
   def environment(application) do
       Keyword.from_enum(:application.get_all_env(application))
   end
 
+  @doc """
+  Returns current application's environment as a keyword
+  """
   def environment do
       Keyword.from_enum(:application.get_all_env)
   end
@@ -48,6 +54,21 @@ defmodule Application do
 end
 
 defmodule Application.Behaviour do
+ @moduledoc """
+ Application.Behaviour establishes the use of `application` behaviour for a module
+ and provides a default implementation for the `stop/1` callback.
+
+ ### Example
+
+    defmodule MyApp do
+      use Application.Behaviour
+
+      def start(_, _) do
+        ...
+      end
+    end
+
+ """
  defmacro __using__(_) do
     quote do
       @behaviour :application
