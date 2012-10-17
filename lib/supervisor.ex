@@ -39,7 +39,7 @@ defmodule GenX.Supervisor do
   end
 
   defprotocol Supervisor do
-    @only [Record]
+    @only [Record, Tuple]
     def supervisor(s)
     def cast(s)
   end
@@ -83,6 +83,12 @@ defmodule GenX.Supervisor do
 
     def cast(s), do: s
 
+  end
+
+  # tuple
+  defimpl Supervisor, for: Tuple do    
+    def supervisor(s), do: s
+    def cast(s), do: s
   end
 
   # one_for_one
