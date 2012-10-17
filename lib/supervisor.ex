@@ -34,7 +34,7 @@ defmodule GenX.Supervisor do
                         shutdown: :infinity
 
   defprotocol Supervision do
-    @only [Record]
+    @only [Record, Tuple]
     def supervise(s)
   end
 
@@ -42,6 +42,10 @@ defmodule GenX.Supervisor do
     @only [Record]
     def supervisor(s)
     def cast(s)
+  end
+
+  defimpl Supervision, for: Tuple do
+    def supervise(t), do: t
   end
 
   defimpl Supervision, for: Child do
