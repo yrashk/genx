@@ -57,6 +57,7 @@ defmodule GenX.Gen do
         def unquote(export[:name]).(unquote_splicing(full_arguments)) do
           unquote(m).unquote(f)(unquote_splicing(args))
         end
+        defoverridable [{unquote(export[:name]), unquote(arity)}]
       end
     end
 
