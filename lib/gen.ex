@@ -47,14 +47,14 @@ defmodule GenX.Gen do
     args = List.concat [server|before_request_send_arguments], 
                        [message_request|extra_send_arguments]
     quote do
-      def unquote(callback).(unquote(request),
+      def unquote(callback)(unquote(request),
                              unquote_splicing(extra_handle_arguments),
                              unquote(state)), do: unquote(options[:do])
       unless Module.defines?(__MODULE__, 
                                       {unquote(export[:name]), 
                                        unquote(arity)}) and
              unquote(export[:name]) !== false do
-        def unquote(export[:name]).(unquote_splicing(full_arguments)) do
+        def unquote(export[:name])(unquote_splicing(full_arguments)) do
           unquote(m).unquote(f)(unquote_splicing(args))
         end
         defoverridable [{unquote(export[:name]), unquote(arity)}]
