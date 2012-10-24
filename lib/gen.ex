@@ -1,6 +1,6 @@
 defmodule GenX.Gen do
   def defhandler(callback, send, f, options) do
-     defhandler(callback, send, f, options, [])
+    defhandler(callback, send, f, options, [])
   end
   def defhandler(callback, send, {function,l,nil}, options, extras) do
     defhandler(callback, send, {function,l,[]}, options, extras)
@@ -52,16 +52,14 @@ defmodule GenX.Gen do
                              unquote(state)), do: unquote(options[:do])
       unless Module.defines?(__MODULE__, 
                                       {unquote(export[:name]), 
-                                        unquote(arity)}) and
+                                       unquote(arity)}) and
              unquote(export[:name]) !== false do
         def unquote(export[:name]).(unquote_splicing(full_arguments)) do
-            unquote(m).unquote(f)(unquote_splicing(args))
+          unquote(m).unquote(f)(unquote_splicing(args))
         end
       end
-
     end
 
   end
-
 
 end

@@ -73,17 +73,17 @@ defmodule GenX.GenServer do
 
   @doc handle_call_doc
   defmacro defcall(call, options, body) do
-     unless is_list(options[:export]) or options[:export] == nil, do: options = Keyword.put options, :export, [server: options[:export]]
-     send = case (options[:export]||[])[:timeout] do
-                 nil -> []
-                 v -> [v]
-            end
+    unless is_list(options[:export]) or options[:export] == nil, do: options = Keyword.put options, :export, [server: options[:export]]
+    send = case (options[:export]||[])[:timeout] do
+             nil -> []
+             v -> [v]
+           end
     defhandler(:handle_call, {:gen_server, :call}, call, Keyword.from_enum(options ++ body), [handle: [:from], send: send])
   end
 
   @doc handle_call_doc
   defmacro defcall(call, body) do
-     defhandler(:handle_call, {:gen_server, :call}, call, body, [handle: [:from]])
+    defhandler(:handle_call, {:gen_server, :call}, call, body, [handle: [:from]])
   end
 
   handle_cast_doc = """
@@ -121,11 +121,11 @@ defmodule GenX.GenServer do
 
   @doc handle_cast_doc
   defmacro defcast(cast, options, body) do
-     defhandler(:handle_cast, {:gen_server, :cast}, cast, Keyword.from_enum(options ++ body))
+    defhandler(:handle_cast, {:gen_server, :cast}, cast, Keyword.from_enum(options ++ body))
   end
   @doc handle_cast_doc
   defmacro defcast(cast, body) do
-     defhandler(:handle_cast, {:gen_server, :cast}, cast, body)
+    defhandler(:handle_cast, {:gen_server, :cast}, cast, body)
   end
 
   handle_info_doc = """
@@ -163,11 +163,11 @@ defmodule GenX.GenServer do
 
   @doc handle_info_doc
   defmacro definfo(info, options, body) do
-     defhandler(:handle_info, {:erlang, :send}, info, Keyword.from_enum(options ++ body))
+    defhandler(:handle_info, {:erlang, :send}, info, Keyword.from_enum(options ++ body))
   end
   @doc handle_info_doc
   defmacro definfo(info, body) do
-      defhandler(:handle_info, {:erlang, :send}, info, body)
+    defhandler(:handle_info, {:erlang, :send}, info, body)
   end
 
 end
