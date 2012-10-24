@@ -21,9 +21,9 @@ defmodule GenX.Gen do
       [] -> function
       _  -> {:{}, 0, [function|arguments]}
     end
-    arguments_stub = 
+    arguments_stub =
         lc argn inlist :lists.seq(1, length(arguments)) do
-          {list_to_atom('arg_' ++ integer_to_list(argn)), 0, :quoted}
+          {binary_to_atom("arg_#{argn}"), 0, :quoted}
         end
     full_arguments =
         case export[:server] do
