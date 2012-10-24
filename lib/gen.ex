@@ -54,9 +54,9 @@ defmodule GenX.Gen do
                                       {unquote(export[:name]), 
                                         unquote(arity)}) and
              unquote(export[:name]) !== false do
-              def unquote(export[:name]).(unquote_splicing(full_arguments)) do
-                  :erlang.apply(unquote(m),unquote(f), unquote(args))
-              end
+        def unquote(export[:name]).(unquote_splicing(full_arguments)) do
+            unquote(m).unquote(f)(unquote_splicing(args))
+        end
       end
 
     end
