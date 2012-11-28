@@ -30,8 +30,12 @@ defmodule Application do
 
     case {options[:dependencies], :application.start(application, options[:type])} do
       {true, {:error, {:not_started, dep}}} ->
-        start(dep, options)
-        start(application, options)
+        case start(dep, options) do
+          :ok ->
+            start(application, options)
+          other ->
+            other
+        end
       {_, {:error, {:already_started, _}}} -> :ok
       {_, other} -> other
     end
