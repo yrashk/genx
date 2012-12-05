@@ -57,12 +57,13 @@ defmodule Application do
   
 end
 
-defmodule Application.Behaviour do
- @moduledoc """
- Application.Behaviour establishes the use of `application` behaviour for a module
- and provides a default implementation for the `stop/1` callback.
+unless Code.ensure_loaded?(Application.Behaviour) do
+  defmodule Application.Behaviour do
+    @moduledoc """
+    Application.Behaviour establishes the use of `application` behaviour for a module
+    and provides a default implementation for the `stop/1` callback.
 
- ### Example
+    ### Example
 
     defmodule MyApp do
       use Application.Behaviour
@@ -71,15 +72,16 @@ defmodule Application.Behaviour do
         ...
       end
     end
+    """
 
- """
- defmacro __using__(_) do
-    quote do
-      @behaviour :application
+    defmacro __using__(_) do
+      quote do
+        @behaviour :application
 
-      def stop(_state), do: :ok
+        def stop(_state), do: :ok
 
-      defoverridable [stop: 1]
+        defoverridable [stop: 1]
+      end
     end
- end
+  end
 end
