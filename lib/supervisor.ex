@@ -1,9 +1,11 @@
-defmodule Supervisor.Behaviour do
-  defmacro __using__(_) do
-    quote do
-      @behaviour :supervisor
-    end
-  end
+unless Code.ensure_loaded?(Supervisor.Behaviour) do
+ defmodule Supervisor.Behaviour do
+   defmacro __using__(_) do
+     quote do
+       @behaviour :supervisor
+     end
+   end
+ end
 end
 
 defmodule GenX.Supervisor do
