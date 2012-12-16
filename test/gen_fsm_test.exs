@@ -19,6 +19,16 @@ defmodule GenX.GenFsm.Sample do
 
  defevent testing/all_states_event, all_states: true, do: {:next_state, :testing, :all_states_event}
 
+ defevent testing/timeout, sync: true, export: [timeout: 2] do
+    :timer.sleep(4)
+    {:next_state, :testing, :timeout}
+ end
+
+ defevent testing/named_timeout, sync: true, export: [server: SampleFSM, timeout: 2] do
+    :timer.sleep(4)
+    {:next_state, :testing, :named_timeout}
+ end
+
  definfo info, state_name: state_name, do: {:next_state, state_name, :info}
  definfo info(a), state_name: state_name, do: {:next_state, state_name, a}
  definfo info(a, b), state_name: state_name, do: {:next_state, state_name, {a,b}}
@@ -144,6 +154,16 @@ defmodule GenX.GenFsm.Test do
       Process.unregister SampleFSM
   end
 
+  test "custom timeout call" do
+      {:ok, pid} = FSM.start_link S, [], []
+      assert catch_exit(S.timeout(pid)) == {:timeout, {:gen_fsm, :sync_send_event, [pid, :timeout, 2]}}
+  end
+
+  test "custom named timeout call" do
+      {:ok, _pid} = FSM.start_link {:local, SampleFSM}, S, [], []
+      assert catch_exit(S.named_timeout) == {:timeout, {:gen_fsm, :sync_send_event, [SampleFSM, :named_timeout, 2]}}
+      Process.unregister SampleFSM
+  end
 
 
 end

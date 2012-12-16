@@ -44,7 +44,12 @@ defmodule GenX.GenFsm do
                {true, false} -> {:send_all_state_event, :handle_event, [:state_name]}
                {true, true} -> {:sync_send_all_state_event, :handle_sync_event, [:from, :state_name]}
              end
-    defhandler(handler, {:gen_fsm, event_sender}, event, Keyword.from_enum(options ++ body), [handle: handle])
+    unless is_list(options[:export]) or options[:export] == nil, do: options = Keyword.put options, :export, [server: options[:export]]
+    send = case (options[:export]||[])[:timeout] do
+             nil -> []
+             v -> [v]
+           end
+    defhandler(handler, {:gen_fsm, event_sender}, event, Keyword.from_enum(options ++ body), [handle: handle, send: send])
    end
 
    defmacro defevent(event, options, body) do
