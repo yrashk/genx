@@ -2,56 +2,56 @@ defmodule GenX.Gen do
   def defhandler(callback, send, f, options) do
     defhandler(callback, send, f, options, [])
   end
-  def defhandler(callback, send, {function,l,nil}, options, extras) do
-    defhandler(callback, send, {function,l,[]}, options, extras)
+  def defhandler(callback, send, {function, meta, nil}, options, extras) do
+    defhandler(callback, send, {function, meta, []}, options, extras)
   end
-  def defhandler(callback, {m,f}, {function,_, arguments}, options, extras) do
+  def defhandler(callback, {m,f}, {function, meta, arguments} = name, options, extras) do
     if is_atom(arguments), do: arguments = []
-    state = options[:state] || {:_, 0, :quoted}
+    state = options[:state] || (quote do: _)
     export_option = case options[:export] do
                          nil -> []
                          keyword when is_list(keyword) -> keyword
                          value -> [server: value]
                     end
-    export = Keyword.merge [server: :server, name: {function, 0, nil}], export_option
+    export = Keyword.merge [server: :server, name: name], export_option
     {function_name, _, _} = export[:name]
     export = Keyword.put export, :name, function_name
     request =
     case arguments do
       [] -> function
-      _  -> {:{}, 0, [function|arguments]}
+      _  -> (quote do: {unquote_splicing([function|arguments])})
     end
     arguments_stub =
         lc argn inlist :lists.seq(1, length(arguments)) do
-          {binary_to_atom("arg_#{argn}"), 0, :quoted}
+          {binary_to_atom("arg_#{argn}"), meta, :quoted}
         end
     full_arguments =
         case export[:server] do
-          :server -> [{:server, 0, :quoted}]
+          :server -> [(quote do: server)]
           _ -> []
         end ++ arguments_stub
     arity = length(full_arguments)
     message_request =
     case arguments_stub do
       [] -> function
-      _ -> {:{}, 0, [function|arguments_stub]}
+      _ -> (quote do: {unquote_splicing([function|arguments_stub])})
     end
     server =
     case export[:server] do
-              :server -> {:server, 0, :quoted}
+              :server -> (quote do: server)
               val -> val
     end
-    extra_handle_arguments = lc e inlist (extras[:handle] || []), do: options[e] || {:_, 0, :quoted}
+    extra_handle_arguments = lc e inlist (extras[:handle] || []), do: options[e] || (quote do: _)
     before_request_send_arguments = extras[:before_request] || []
     extra_send_arguments = extras[:send] || []
-    args = List.concat [server|before_request_send_arguments], 
+    args = List.concat [server|before_request_send_arguments],
                        [message_request|extra_send_arguments]
     quote do
       def unquote(callback)(unquote(request),
                              unquote_splicing(extra_handle_arguments),
                              unquote(state)), do: unquote(options[:do])
-      unless Module.defines?(__MODULE__, 
-                                      {unquote(export[:name]), 
+      unless Module.defines?(__MODULE__,
+                                      {unquote(export[:name]),
                                        unquote(arity)}) and
              unquote(export[:name]) !== false do
         def unquote(export[:name])(unquote_splicing(full_arguments)) do
