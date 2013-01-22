@@ -23,7 +23,7 @@ defmodule GenX.Gen do
     end
     arguments_stub =
         lc argn inlist :lists.seq(1, length(arguments)) do
-          {binary_to_atom("arg_#{argn}"), meta, :quoted}
+          quote do: var!(unquote(binary_to_atom("arg_#{argn}")), __MODULE__)
         end
     full_arguments =
         case export[:server] do
