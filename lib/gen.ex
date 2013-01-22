@@ -5,7 +5,7 @@ defmodule GenX.Gen do
   def defhandler(callback, send, {function, meta, nil}, options, extras) do
     defhandler(callback, send, {function, meta, []}, options, extras)
   end
-  def defhandler(callback, {m,f}, {function, meta, arguments} = name, options, extras) do
+  def defhandler(callback, {m,f}, {function, _meta, arguments} = name, options, extras) do
     if is_atom(arguments), do: arguments = []
     state = options[:state] || (quote do: _)
     export_option = case options[:export] do
