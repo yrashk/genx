@@ -92,6 +92,7 @@ defmodule GenX.GenServer.Test do
   test "private call" do
       {:ok, pid} = GS.start_link(S,[],[]) 
       assert not :erlang.function_exported(S, :private_call, 1)
+      assert not :erlang.function_exported(S, :private_call, 0)
       assert GS.call(pid, :private_call) == :ok
   end
 
@@ -181,6 +182,7 @@ defmodule GenX.GenServer.Test do
   test "private info" do
       {:ok, pid} = GS.start_link(S,[],[]) 
       assert not :erlang.function_exported(S, :private_info, 2)
+      assert not :erlang.function_exported(S, :private_info, 1)
       assert (pid <- {:private_info, 123}) == {:private_info, 123}
       assert S.get_state(pid) == 123
   end
