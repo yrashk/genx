@@ -7,12 +7,61 @@ defmodule CommonTest do
   def run(options) do
     :ct.run_test(Keyword.put options, :auto_compile, false)
   end
+
+  def run(path, options) when is_binary(path), do: run([path], options)
+  def run(paths, options) do
+    files = scan(paths)
+    run(files, options, [])
+  end
+
+  defp run([], _options, acc), do: acc
+  defp run([file_path|rest], options, acc) do
+    res = test_file(file_path, options)
+    run(rest, options, res ++ acc)
+  end
+
+  def test_file(file_path, options) do
+    suites = lc mod inlist extract_modules(file_path), is_test?(mod), do: mod
+    case suites do
+      [] -> []
+      suites ->
+        options = Keyword.merge options, [suite: suites]
+        [run(options)]
+    end
+  end
+
+  def scan(paths) do
+    files =
+      List.concat(
+        lc path inlist paths do
+          if File.regular?(path) do
+            [path]
+          else
+            Path.wildcard("#{path}/**/*.exs")
+          end
+      end)
+    files |> filter |> Enum.uniq
+  end
+
+  def filter(files) do
+    Enum.filter(files, fn(x) -> String.first(Path.basename(x)) != "." end)
+  end
+
+  def extract_modules(file_path) do
+    lc {m, _} inlist :elixir_compiler.file(file_path), do: m
+  end
+
+  def is_test?(module) do
+    Keyword.has_key?(module.__info__(:attributes), :common_test)
+  end
 end
 
 defmodule CommonTest.Suite do
   defmacro __using__(_) do
     quote do
       import CommonTest.Suite
+      Module.register_attribute unquote(__CALLER__.module), :common_test
+      @common_test true
 
       def suite, do: []
 
