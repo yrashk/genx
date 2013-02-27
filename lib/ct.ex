@@ -107,7 +107,7 @@ defmodule CommonTest.Suite do
 
   defp _test(name, options, caller) do
     name = name_to_atom(name)
-    cfg = options[:config] || {:_, 0, :quoted}
+    cfg = options[:config] || {:_, [], :quoted}
     info = Keyword.delete(Keyword.delete(options, :config), :do)
     quote do
       if Module.get_attribute(unquote(caller.module), :group) == nil do
