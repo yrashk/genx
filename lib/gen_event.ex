@@ -1,34 +1,3 @@
-defmodule GenEvent.Behaviour do
- defmacro __using__(_) do
-    quote do
-      @behaviour :gen_event
-
-      def handle_event(_event, state) do
-        { :ok, state }
-      end
-
-      def handle_call(_req, state) do
-        { :ok, :ok, state }
-      end
-
-      def handle_info(_msg, state) do
-        { :ok, state }
-      end
-
-      def terminate(reason, state) do
-        :error_logger.error_report('#{inspect __MODULE__} crashed:\n#{inspect reason}')
-        :error_logger.error_report('#{inspect __MODULE__} snapshot:\n#{inspect state}')
-        :ok
-      end
-
-      def code_change(_old, state, _extra) do
-        { :ok, state }
-      end
-
-      defoverridable [handle_event: 2, handle_call: 2, handle_info: 2, terminate: 2, code_change: 3]
-    end
- end
-end
 defmodule GenX.GenEvent do
   import GenX.Gen
 
