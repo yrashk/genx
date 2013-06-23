@@ -8,10 +8,11 @@ defmodule GenX.Gen do
   def defhandler(callback, {m,f}, {function, _meta, arguments} = name, options, extras) do
     if is_atom(arguments), do: arguments = []
     state = options[:state] || (quote do: _)
-    export_option = case options[:export] do
-                         nil -> []
-                         keyword when is_list(keyword) -> keyword
-                         value -> [server: value]
+    {export_option, no_export} = case options[:export] do
+                         nil -> {[], false}
+                         false -> {[],true}
+                         keyword when is_list(keyword) -> {keyword, false}
+                         value -> {[server: value], false}
                     end
     export = Keyword.merge [server: :server, name: name], export_option
     {function_name, _, _} = export[:name]
@@ -52,8 +53,8 @@ defmodule GenX.Gen do
                              unquote(state)), do: unquote(options[:do])
       unless Module.defines?(__MODULE__,
                                       {unquote(export[:name]),
-                                       unquote(arity)}) and
-             unquote(export[:name]) !== false do
+                                       unquote(arity)}) or 
+             unquote(no_export) do
         def unquote(export[:name])(unquote_splicing(full_arguments)) do
           unquote(m).unquote(f)(unquote_splicing(args))
         end
