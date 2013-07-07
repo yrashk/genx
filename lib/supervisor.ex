@@ -70,7 +70,7 @@ defmodule GenX.Supervisor do
 
     def supervisor(s) do
       {max_r, max_t} = s.max_restarts
-      {{s.restart_strategy, max_r, max_t}, lc child inlist s.children, do: GenX.Supervisor.supervise child}
+      {{s.restart_strategy, max_r, max_t}, (lc child inlist s.children, do: GenX.Supervisor.supervise child)}
     end
 
     def cast(s), do: s
