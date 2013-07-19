@@ -1,8 +1,10 @@
-defmodule GenX.GenEvent.Sample do                                                           
- use GenEvent.Behaviour                                                    
- import GenX.GenEvent                                                     
+Code.require_file "test_helper.exs", __DIR__
 
- def init(_), do: {:ok, nil}                                           
+defmodule GenX.GenEvent.Sample do
+ use GenEvent.Behaviour
+ import GenX.GenEvent
+
+ def init(_), do: {:ok, nil}
 
  defevent event, do: {:ok, :event}
  defevent event(a), do: {:ok, a}
@@ -30,7 +32,7 @@ defmodule GenX.GenEvent.Sample do
 end
 
 
-defmodule GenX.GenEvent.Test do    
+defmodule GenX.GenEvent.Test do
   alias GenX.GenEvent.Sample, as: S
   alias :gen_event, as: GE
   use ExUnit.Case
@@ -81,7 +83,7 @@ defmodule GenX.GenEvent.Test do
   end
 
   test "named event" do
-      {:ok, _pid} = GE.start_link({:local, SampleEventManager}) 
+      {:ok, _pid} = GE.start_link({:local, SampleEventManager})
       assert GE.add_handler(SampleEventManager, S, []) == :ok
 
       assert S.named_event == :ok
@@ -135,7 +137,7 @@ defmodule GenX.GenEvent.Test do
   end
 
   test "named info" do
-      {:ok, _pid} = GE.start_link({:local, SampleEventManager}) 
+      {:ok, _pid} = GE.start_link({:local, SampleEventManager})
       assert GE.add_handler(SampleEventManager, S, []) == :ok
 
       assert S.named_info == :named_info

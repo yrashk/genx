@@ -1,3 +1,5 @@
+Code.require_file "test_helper.exs", __DIR__
+
 defmodule MyTest do
   use CommonTest.Suite
   alias CommonTest, as: CT

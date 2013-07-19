@@ -1,6 +1,8 @@
+Code.require_file "test_helper.exs", __DIR__
+
 defmodule GenX.GenServer.Sample do
- import GenX.GenServer              
- use GenServer.Behaviour             
+ import GenX.GenServer
+ use GenServer.Behaviour
  alias :gen_server, as: GS
 
  defcall call, do: {:reply, :call, nil}
@@ -42,7 +44,7 @@ defmodule GenX.GenServer.Sample do
  defcast named_cast(state), export: SampleServer, do: {:noreply, state}
 
  defcast custom_cast_export, export: [name: custom_cast_export_indeed], state: state, do: {:noreply, state}
- 
+
  definfo info, do: {:noreply, :infoed}
  definfo info(a), do: {:noreply, {:infoed, a}}
  definfo info(a,b), do: {:noreply, {:infoed, a, b}}
@@ -51,13 +53,13 @@ defmodule GenX.GenServer.Sample do
  definfo private_info(state), export: false, do: {:noreply, state}
 
  definfo named_info(state), export: SampleServer, do: {:noreply, state}
- 
+
  definfo custom_info_export, export: [name: custom_info_export_indeed], state: state, do: {:noreply, state}
 
  def init(_), do: {:ok, nil}
 end
 
-defmodule GenX.GenServer.Test do    
+defmodule GenX.GenServer.Test do
   alias GenX.GenServer.Sample, as: S
   alias :gen_server, as: GS
   use ExUnit.Case
@@ -79,42 +81,42 @@ defmodule GenX.GenServer.Test do
   end
 
   test "regular call matching on state" do
-      {:ok, pid} = GS.start_link(S,[],[]) 
+      {:ok, pid} = GS.start_link(S,[],[])
       S.set_state(pid, :hello)
       assert S.get_state(pid) == :hello
   end
 
   test "regular call matching on from" do
-      {:ok, pid} = GS.start_link(S,[],[]) 
+      {:ok, pid} = GS.start_link(S,[],[])
       assert S.async_reply(pid) == :ok
   end
 
   test "private call" do
-      {:ok, pid} = GS.start_link(S,[],[]) 
+      {:ok, pid} = GS.start_link(S,[],[])
       assert not :erlang.function_exported(S, :private_call, 1)
       assert not :erlang.function_exported(S, :private_call, 0)
       assert GS.call(pid, :private_call) == :ok
   end
 
   test "named call" do
-      {:ok, _pid} = GS.start_link({:local, SampleServer},S, [],[]) 
+      {:ok, _pid} = GS.start_link({:local, SampleServer},S, [],[])
       assert S.named_call == :ok
       Process.unregister SampleServer
   end
 
   test "custom timeout call" do
-      {:ok, pid} = GS.start_link(S,[],[]) 
+      {:ok, pid} = GS.start_link(S,[],[])
       assert catch_exit(S.timeout(pid)) == {:timeout, {:gen_server, :call, [pid, :timeout, 1]}}
   end
 
   test "custom named timeout call" do
-      {:ok, _pid} = GS.start_link({:local, SampleServer}, S,[],[]) 
+      {:ok, _pid} = GS.start_link({:local, SampleServer}, S,[],[])
       assert catch_exit(S.named_timeout) == {:timeout, {:gen_server, :call, [SampleServer, :named_timeout, 1]}}
       Process.unregister SampleServer
   end
 
   test "call custom export name" do
-      {:ok, pid} = GS.start_link(S,[],[]) 
+      {:ok, pid} = GS.start_link(S,[],[])
       assert (S.custom_call_export_indeed(pid) == :custom)
   end
 
@@ -139,14 +141,14 @@ defmodule GenX.GenServer.Test do
  end
 
   test "private cast" do
-      {:ok, pid} = GS.start_link(S,[],[]) 
+      {:ok, pid} = GS.start_link(S,[],[])
       assert not :erlang.function_exported(S, :private_cast, 2)
       assert GS.cast(pid, {:private_cast, 123}) == :ok
       assert S.get_state(pid) == 123
   end
 
   test "named cast" do
-      {:ok, pid} = GS.start_link({:local, SampleServer},S, [],[]) 
+      {:ok, pid} = GS.start_link({:local, SampleServer},S, [],[])
       assert S.named_cast(123) == :ok
       assert S.get_state(pid) == 123
       Process.unregister SampleServer
@@ -154,7 +156,7 @@ defmodule GenX.GenServer.Test do
 
 
   test "cast custom export name" do
-      {:ok, pid} = GS.start_link(S,[],[]) 
+      {:ok, pid} = GS.start_link(S,[],[])
       assert (S.custom_cast_export_indeed(pid) == :ok)
   end
 
@@ -180,7 +182,7 @@ defmodule GenX.GenServer.Test do
   end
 
   test "private info" do
-      {:ok, pid} = GS.start_link(S,[],[]) 
+      {:ok, pid} = GS.start_link(S,[],[])
       assert not :erlang.function_exported(S, :private_info, 2)
       assert not :erlang.function_exported(S, :private_info, 1)
       assert (pid <- {:private_info, 123}) == {:private_info, 123}
@@ -188,14 +190,14 @@ defmodule GenX.GenServer.Test do
   end
 
   test "named info" do
-      {:ok, pid} = GS.start_link({:local, SampleServer},S, [],[]) 
+      {:ok, pid} = GS.start_link({:local, SampleServer},S, [],[])
       assert S.named_info(123) == {:named_info, 123}
       assert S.get_state(pid) == 123
       Process.unregister SampleServer
   end
 
   test "info custom export name" do
-      {:ok, pid} = GS.start_link(S,[],[]) 
+      {:ok, pid} = GS.start_link(S,[],[])
       assert (S.custom_info_export_indeed(pid) == :custom_info_export)
   end
 

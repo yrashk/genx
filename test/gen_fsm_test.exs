@@ -1,3 +1,4 @@
+Code.require_file "test_helper.exs", __DIR__
 defmodule GenX.GenFsm.Sample do
  use GenFSM.Behaviour
  import GenX.GenFsm
