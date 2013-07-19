@@ -1,34 +1,3 @@
-defmodule GenFsm.Behaviour do
- defmacro __using__(_) do
-    quote do
-      @behaviour :gen_fsm
-
-      def handle_event(_event, state_name, state) do
-        { :next_state, state_name, state }
-      end
-
-      def handle_sync_event(_event, _from, state_name, state) do
-        { :next_state, state_name, state }
-      end
-
-      def handle_info(_msg, state_name, state) do
-        { :next_state, state_name, state }
-      end
-
-      def terminate(reason, state_name, state) do
-        :error_logger.error_report('#{inspect __MODULE__} crashed:\n#{inspect reason}')
-        :error_logger.error_report('#{inspect __MODULE__} snapshot:\n#{inspect state_name}/#{inspect state} ')
-        :ok
-      end
-
-      def code_change(_old, state_name, state, _extra) do
-        { :ok, state_name, state }
-      end
-
-      defoverridable [handle_event: 3, handle_sync_event: 4, handle_info: 3, terminate: 3, code_change: 4]
-    end
- end
-end
 defmodule GenX.GenFsm do
   import GenX.Gen
 

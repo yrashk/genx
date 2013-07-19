@@ -1,5 +1,5 @@
 defmodule GenX.GenFsm.Sample do
- use GenFsm.Behaviour
+ use GenFSM.Behaviour
  import GenX.GenFsm
 
  def init(_), do: {:ok, :testing, nil}
