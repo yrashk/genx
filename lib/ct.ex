@@ -32,7 +32,7 @@ defmodule CommonTest do
 
   def scan(paths) do
     files =
-      List.concat(
+      Enum.concat(
         lc path inlist paths do
           if File.regular?(path) do
             [path]
@@ -122,17 +122,17 @@ defmodule CommonTest.Suite do
       def __init_testcase__(_name, config), do: config
       def __end_testcase__(_name, _config), do: :ok
 
-      
-      Module.register_attribute unquote(__CALLER__.module), :all, 
+
+      Module.register_attribute unquote(__CALLER__.module), :all,
                                 persist: true, accumulate: true
 
-      Module.register_attribute unquote(__CALLER__.module), :groups, 
+      Module.register_attribute unquote(__CALLER__.module), :groups,
                                 persist: true, accumulate: true
 
-      Module.register_attribute unquote(__CALLER__.module), :group, 
+      Module.register_attribute unquote(__CALLER__.module), :group,
                                 persist: false, accumulate: false
 
-      Module.register_attribute unquote(__CALLER__.module), :group_test, 
+      Module.register_attribute unquote(__CALLER__.module), :group_test,
                                 persist: false, accumulate: true
 
       def all do
@@ -187,7 +187,7 @@ defmodule CommonTest.Suite do
     end
   end
 
-  
+
 
   defp name_to_atom(atom) when is_atom(atom), do: atom
   defp name_to_atom(string) when is_binary(string), do: binary_to_atom(string)

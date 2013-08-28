@@ -45,7 +45,7 @@ defmodule GenX.Gen do
     extra_handle_arguments = lc e inlist (extras[:handle] || []), do: options[e] || (quote do: _)
     before_request_send_arguments = extras[:before_request] || []
     extra_send_arguments = extras[:send] || []
-    args = List.concat [server|before_request_send_arguments],
+    args = Enum.concat [server|before_request_send_arguments],
                        [message_request|extra_send_arguments]
     quote do
       def unquote(callback)(unquote(request),
@@ -53,7 +53,7 @@ defmodule GenX.Gen do
                              unquote(state)), do: unquote(options[:do])
       unless Module.defines?(__MODULE__,
                                       {unquote(export[:name]),
-                                       unquote(arity)}) or 
+                                       unquote(arity)}) or
              unquote(no_export) do
         def unquote(export[:name])(unquote_splicing(full_arguments)) do
           unquote(m).unquote(f)(unquote_splicing(args))
